@@ -7,9 +7,9 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, Messa
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-TOKEN = "8579048820:AAEFOX2J_2Xcdb3-ioZaKAIgsjPiMLljrH8"
+TOKEN = "8579048820:AAEdZzcN_5C2mYpZjsiBJHJyI0MQnvtxdBc"
 
-# 1. Flask server banate hain taaki Railway ka port requirement poora ho jaye
+# Flask server taaki Railway ka port requirement poora rahe
 app = Flask('')
 
 @app.route('/')
@@ -20,7 +20,7 @@ def run_flask():
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
 
-# 2. Telegram Bot Handlers
+# Telegram Bot Handlers
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Assalam-o-Alaikum! Main Muhammad Parwez ka personal secure bot hoon. Boliye, main aapki kya madad kar sakta hoon?")
 
