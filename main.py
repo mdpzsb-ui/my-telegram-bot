@@ -11,6 +11,10 @@ logger = logging.getLogger(__name__)
 TOKEN = "8579048820:AAEdZzcN_5C2mYpZjsiBJHJyI0MQnvtxdBc"
 PORT = int(os.environ.get("PORT", 8080))
 
+# Railway par aapke app ka live URL automatic mil jata hai
+# Agar Railway domain milega toh webhook set ho jayega
+RENDER_EXTERNAL_URL = os.environ.get("RAILWAY_STATIC_URL") or os.environ.get("RAILWAY_PUBLIC_DOMAIN")
+
 app = Flask(__name__)
 bot = telegram.Bot(TOKEN)
 application = None
@@ -29,6 +33,15 @@ async def setup_bot():
     application.add_handler(CommandHandler('start', start))
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
     await application.initialize()
+
+    # Automatic Webhook Set karein Telegram ke sath
+    if RENDER_EXTERNAL_URL:
+        webhook_url = f"https://{RENDER_EXTERNAL_URL}/{TOKEN}"
+        await bot.set_webhook(webhook_url)
+        logger.info(f"Webhook set to: {webhook_url}")
+    else:
+        # Agar railway domain direct na mile toh standard URL format
+        pass
 
 @app.route('/')
 def home():
