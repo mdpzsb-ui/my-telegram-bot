@@ -1,4 +1,3 @@
-import os
 import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
@@ -16,24 +15,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not url or "http" not in url:
         return
 
-    await update.message.reply_text("⏳ Downloading...")
-
-    ydl_opts = {
-        'format': 'best/bestvideo+bestaudio',
-        'outtmpl': 'video.mp4',
-        'noplaylist': True,
-    }
+    await update.message.reply_text("⏳ Link fetch kiya ja raha hai...")
 
     try:
+        ydl_opts = {
+            'format': 'b',
+            'noplaylist': True,
+        }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
-        
-        if os.path.exists('video.mp4'):
-            with open('video.mp4', 'rb') as f:
-                await update.message.reply_video(f)
-            os.remove('video.mp4')
-        else:
-            await update.message.reply_text("Download nahi ho saka.")
+            info = ydl.extract_info(url, download=False)
+            video_url = info.get('url')
+            
+            if video_url:
+                await update.message.reply_video(video_url)
+            else:
+                await update.message.reply_text("Video link nahi mil saka.")
     except Exception as e:
         await update.message.reply_text(f"Error: {str(e)}")
 
@@ -42,3 +38,4 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('start', start))
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
     application.run_polling()
+    
